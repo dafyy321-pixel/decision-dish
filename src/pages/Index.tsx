@@ -5,12 +5,14 @@ import CustomListManager from "@/components/CustomListManager";
 import DrawButton from "@/components/DrawButton";
 import ResultDisplay from "@/components/ResultDisplay";
 import SpinWheel from "@/components/SpinWheel";
+import SplashScreen from "@/components/SplashScreen";
 import titleLogo from "@/assets/title-logo.png";
 import { toast } from "sonner";
 
 const STORAGE_KEY = "custom-restaurants";
 
 const Index = () => {
+  const [showSplash, setShowSplash] = useState(true);
   const [mode, setMode] = useState<"system" | "custom">("system");
   const [customItems, setCustomItems] = useState<string[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -73,6 +75,9 @@ const Index = () => {
 
   return (
     <>
+      {/* Splash Screen */}
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+
       {/* Spin Wheel Overlay */}
       {showWheel && result && (
         <SpinWheel
