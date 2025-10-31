@@ -36,7 +36,10 @@ const ResultDisplay = ({ result, mode, onDrawAgain }: ResultDisplayProps) => {
       <Button
         onClick={onDrawAgain}
         variant="outline"
-        className="w-full h-14 rounded-3xl border-2 hover:bg-secondary hover:border-primary/50 transition-all"
+        className="w-full h-14 rounded-3xl border-2 hover:bg-secondary hover:border-primary/50 transition-all shadow-md"
+        style={{
+          textShadow: '0 1px 2px rgba(0, 0, 0, 0.15), 0 0 0.5px rgba(255, 255, 255, 0.5)',
+        }}
       >
         <RefreshCw className="w-5 h-5 mr-2" />
         再抽一次

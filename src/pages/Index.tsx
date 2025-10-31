@@ -90,7 +90,7 @@ const Index = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="max-w-md w-full mx-auto px-6 py-8 space-y-6">
         {/* Header with Title Logo */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-1">
           <div className="relative inline-block">
             <img
               src={titleLogo}
@@ -124,10 +124,14 @@ const Index = () => {
 
             {/* System Mode Description */}
             {mode === "system" && (
-              <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-6 border border-primary/10">
-                <p className="text-center text-muted-foreground">
-                  点击下方按钮，从{" "}
-                  <span className="text-primary font-semibold">
+              <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-6 border-2 border-primary/20 shadow-md">
+                <p className="text-center text-muted-foreground" style={{
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.15), 0 0 0.5px rgba(255, 255, 255, 0.5)',
+                }}>
+                  点击下方按钮,从{" "}
+                  <span className="text-primary font-semibold" style={{
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.15), 0 0 0.5px rgba(255, 255, 255, 0.5)',
+                  }}>
                     {presetRestaurants.length} 家
                   </span>{" "}
                   精选店铺中随机抽取

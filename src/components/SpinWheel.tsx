@@ -8,85 +8,63 @@ interface SpinWheelProps {
 }
 
 const SpinWheel = ({ items, result, onComplete }: SpinWheelProps) => {
-  const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(true);
 
   useEffect(() => {
-    // Find the index of the result
-    const resultIndex = items.findIndex((item) => {
-      if (typeof item === "string") {
-        return item === result;
-      } else if (typeof result !== "string") {
-        return item.id === result.id;
-      }
-      return false;
-    });
-
-    // Calculate rotation: spin multiple times + land on result
-    const degreesPerItem = 360 / items.length;
-    const targetRotation = -(resultIndex * degreesPerItem);
-    const spins = 5; // Number of full rotations before landing
-    const finalRotation = spins * 360 + targetRotation;
-
-    // Start spinning after a short delay
-    setTimeout(() => {
-      setRotation(finalRotation);
-    }, 100);
-
-    // Stop spinning and show result
-    setTimeout(() => {
+    // Spin for 1 second, then wait 0.3 second before completing
+    const spinTimer = setTimeout(() => {
       setIsSpinning(false);
-      setTimeout(() => {
-        onComplete();
-      }, 800);
-    }, 4000);
-  }, [items, result, onComplete]);
+    }, 1500);
 
-  const itemCount = items.length;
-  const degreesPerItem = 360 / itemCount;
+    const completeTimer = setTimeout(() => {
+      onComplete();
+    }, 1300);
+
+    return () => {
+      clearTimeout(spinTimer);
+      clearTimeout(completeTimer);
+    };
+  }, [onComplete]);
+
+  const segmentCount = 12; // 固定12个扇形
 
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="relative w-full max-w-md px-6">
         {/* Title */}
         <div className="text-center mb-8 animate-fade-in">
-          <h2 className="text-2xl font-bold text-foreground mb-2">
-            正在抽取中...
+          <h2 className="text-3xl font-bold text-foreground mb-2">
+            🍽️ 正在抽取中...
           </h2>
-          <p className="text-muted-foreground">请稍候</p>
+          <p className="text-muted-foreground text-lg">请稍候</p>
         </div>
 
         {/* Wheel Container */}
         <div className="relative w-full aspect-square max-w-sm mx-auto">
           {/* Pointer/Arrow at top */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 z-20">
-            <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[30px] border-t-primary drop-shadow-lg" />
+            <div className="w-0 h-0 border-l-[24px] border-l-transparent border-r-[24px] border-r-transparent border-t-[36px] border-t-primary drop-shadow-2xl" />
           </div>
 
-          {/* Wheel */}
-          <div className="relative w-full h-full rounded-full shadow-2xl overflow-hidden">
-            {/* Rotating Wheel */}
+          {/* Wheel - Perfect Circle */}
+          <div className="relative w-full h-full rounded-full shadow-2xl">
+            {/* Rotating Wheel with continuous fast spin */}
             <div
-              className="absolute inset-0 rounded-full transition-transform duration-[4000ms] ease-out"
+              className={`absolute inset-0 rounded-full transition-all duration-300 ${
+                isSpinning ? "animate-spin blur-sm" : "blur-0"
+              }`}
               style={{
-                transform: `rotate(${rotation}deg)`,
-                transitionTimingFunction: "cubic-bezier(0.25, 0.1, 0.25, 1)",
+                animationDuration: isSpinning ? "0.5s" : "0s",
               }}
             >
-              {items.map((item, index) => {
-                const rotation = index * degreesPerItem;
-                const itemName = typeof item === "string" ? item : item.name;
+              {/* Create segments with gradient colors */}
+              {Array.from({ length: segmentCount }).map((_, index) => {
+                const degreesPerSegment = 360 / segmentCount;
+                const rotation = index * degreesPerSegment;
                 
-                // Generate colors from design system
-                const colors = [
-                  "hsl(var(--primary))",
-                  "hsl(var(--secondary))",
-                  "hsl(var(--accent))",
-                  "hsl(var(--primary) / 0.8)",
-                  "hsl(var(--secondary) / 0.8)",
-                  "hsl(var(--accent) / 0.8)",
-                ];
-                const bgColor = colors[index % colors.length];
+                // Create gradient from green to orange
+                const gradientAngle = 135 + (index * 30); // Vary the angle
+                const bgGradient = `linear-gradient(${gradientAngle}deg, hsl(110 38% 71%), hsl(30 88% 69%))`;
 
                 return (
                   <div
@@ -95,46 +73,44 @@ const SpinWheel = ({ items, result, onComplete }: SpinWheelProps) => {
                     style={{
                       transform: `rotate(${rotation}deg)`,
                       clipPath: `polygon(50% 50%, 50% 0%, ${
-                        50 + 50 * Math.sin((degreesPerItem * Math.PI) / 180)
+                        50 + 50 * Math.sin((degreesPerSegment * Math.PI) / 180)
                       }% ${
-                        50 - 50 * Math.cos((degreesPerItem * Math.PI) / 180)
+                        50 - 50 * Math.cos((degreesPerSegment * Math.PI) / 180)
                       }%)`,
-                      backgroundColor: bgColor,
+                      background: bgGradient,
                     }}
-                  >
-                    <div
-                      className="absolute top-[15%] left-1/2 -translate-x-1/2 w-32 text-center"
-                      style={{
-                        transform: `translateX(-50%) rotate(${
-                          degreesPerItem / 2
-                        }deg)`,
-                      }}
-                    >
-                      <p className="text-xs font-semibold text-white drop-shadow-md line-clamp-2 break-words">
-                        {itemName}
-                      </p>
-                    </div>
-                  </div>
+                  />
                 );
               })}
             </div>
 
+            {/* White border to make it perfectly circular */}
+            <div className="absolute inset-0 rounded-full border-8 border-white pointer-events-none" />
+
             {/* Center Circle */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-gradient-to-br from-primary via-primary/90 to-primary/70 shadow-xl border-4 border-white flex items-center justify-center z-10">
-              <div className="text-white font-bold text-sm">抽奖中</div>
+            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 rounded-full bg-white shadow-2xl border-4 border-white flex items-center justify-center z-10 transition-all duration-300 ${
+              isSpinning ? "" : ""
+            }`}>
+              <img 
+                src="/favicon.png" 
+                alt="等会吃啥"
+                className={`w-20 h-20 transition-all duration-300 ${
+                  isSpinning ? "" : "animate-bounce"
+                }`}
+              />
             </div>
           </div>
 
-          {/* Glow Effect */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 via-transparent to-accent/20 pointer-events-none" />
+          {/* Soft glow effect matching theme */}
+          <div className="absolute inset-0 rounded-full shadow-[0_0_60px_rgba(162,210,154,0.4)] pointer-events-none" />
         </div>
 
-        {/* Sparkles Animation */}
+        {/* Decorative elements */}
         {isSpinning && (
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full animate-ping" />
-            <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-accent rounded-full animate-ping animation-delay-200" />
-            <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-secondary rounded-full animate-ping animation-delay-400" />
+            <div className="absolute top-1/4 left-1/4 text-2xl animate-ping">✨</div>
+            <div className="absolute top-1/3 right-1/4 text-2xl animate-ping animation-delay-200">🌟</div>
+            <div className="absolute bottom-1/3 left-1/3 text-2xl animate-ping animation-delay-400">⭐</div>
           </div>
         )}
       </div>
