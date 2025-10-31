@@ -4,6 +4,7 @@ import ModeSelector from "@/components/ModeSelector";
 import CustomListManager from "@/components/CustomListManager";
 import DrawButton from "@/components/DrawButton";
 import ResultDisplay from "@/components/ResultDisplay";
+import SpinWheel from "@/components/SpinWheel";
 import titleLogo from "@/assets/title-logo.png";
 import { toast } from "sonner";
 
@@ -14,6 +15,7 @@ const Index = () => {
   const [customItems, setCustomItems] = useState<string[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [result, setResult] = useState<Restaurant | string | null>(null);
+  const [showWheel, setShowWheel] = useState(false);
 
   // Load custom items from localStorage
   useEffect(() => {
@@ -44,28 +46,44 @@ const Index = () => {
     }
 
     setIsDrawing(true);
+    setShowWheel(true);
     setResult(null);
 
-    // Simulate drawing animation
-    setTimeout(() => {
-      if (mode === "system") {
-        const randomIndex = Math.floor(Math.random() * presetRestaurants.length);
-        setResult(presetRestaurants[randomIndex]);
-      } else {
-        const randomIndex = Math.floor(Math.random() * customItems.length);
-        setResult(customItems[randomIndex]);
-      }
-      setIsDrawing(false);
-    }, 1500);
+    // Calculate result immediately for the wheel
+    let selectedResult: Restaurant | string;
+    if (mode === "system") {
+      const randomIndex = Math.floor(Math.random() * presetRestaurants.length);
+      selectedResult = presetRestaurants[randomIndex];
+    } else {
+      const randomIndex = Math.floor(Math.random() * customItems.length);
+      selectedResult = customItems[randomIndex];
+    }
+    setResult(selectedResult);
+  };
+
+  const handleWheelComplete = () => {
+    setShowWheel(false);
+    setIsDrawing(false);
   };
 
   const handleDrawAgain = () => {
     setResult(null);
+    setShowWheel(false);
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="max-w-md w-full mx-auto px-6 py-8 space-y-6">
+    <>
+      {/* Spin Wheel Overlay */}
+      {showWheel && result && (
+        <SpinWheel
+          items={mode === "system" ? presetRestaurants : customItems}
+          result={result}
+          onComplete={handleWheelComplete}
+        />
+      )}
+
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="max-w-md w-full mx-auto px-6 py-8 space-y-6">
         {/* Header with Title Logo */}
         <div className="text-center space-y-4">
           <div className="relative inline-block">
@@ -121,12 +139,13 @@ const Index = () => {
           </div>
         )}
 
-        {/* Footer */}
-        <div className="text-center text-xs text-muted-foreground pt-4">
-          <p>吃饭愉快 🍱</p>
+          {/* Footer */}
+          <div className="text-center text-xs text-muted-foreground pt-4">
+            <p>吃饭愉快 🍱</p>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
