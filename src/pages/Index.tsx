@@ -4,7 +4,7 @@ import ModeSelector from "@/components/ModeSelector";
 import CustomListManager from "@/components/CustomListManager";
 import DrawButton from "@/components/DrawButton";
 import ResultDisplay from "@/components/ResultDisplay";
-import heroCharacter from "@/assets/hero-character.png";
+import titleLogo from "@/assets/title-logo.png";
 import { toast } from "sonner";
 
 const STORAGE_KEY = "custom-restaurants";
@@ -66,19 +66,16 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="max-w-md w-full mx-auto px-6 py-8 space-y-6">
-        {/* Header with Hero Character */}
+        {/* Header with Title Logo */}
         <div className="text-center space-y-4">
           <div className="relative inline-block">
             <img
-              src={heroCharacter}
-              alt="Cute mascot"
-              className="w-32 h-32 mx-auto animate-float"
+              src={titleLogo}
+              alt="等会吃啥"
+              className="w-80 max-w-full mx-auto"
             />
           </div>
-          <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">等会吃啥</h1>
-            <p className="text-muted-foreground">选择困难症？让我帮你决定～</p>
-          </div>
+          <p className="text-muted-foreground">选择困难症？让我帮你决定～</p>
         </div>
 
         {/* Mode Selector */}
