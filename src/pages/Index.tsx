@@ -64,8 +64,8 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-md mx-auto px-6 py-8 space-y-6">
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="max-w-md w-full mx-auto px-6 py-8 space-y-6">
         {/* Header with Hero Character */}
         <div className="text-center space-y-4">
           <div className="relative inline-block">
