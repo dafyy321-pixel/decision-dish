@@ -6,14 +6,13 @@ import CustomListManager from "@/components/CustomListManager";
 import DrawButton from "@/components/DrawButton";
 import ResultDisplay from "@/components/ResultDisplay";
 import SpinWheel from "@/components/SpinWheel";
-import SplashScreen from "@/components/SplashScreen";
+import BottomNavBar from "@/components/BottomNavBar";
 import titleLogo from "@/assets/title-logo.png";
 import { toast } from "sonner";
 
 const STORAGE_KEY = "custom-restaurants";
 
 const Index = () => {
-  const [showSplash, setShowSplash] = useState(true);
   const [mode, setMode] = useState<"system" | "custom">("system");
   const [customItems, setCustomItems] = useState<string[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -87,9 +86,6 @@ const Index = () => {
 
   return (
     <>
-      {/* Splash Screen */}
-      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
-
       {/* Spin Wheel Overlay */}
       {showWheel && result && (
         <SpinWheel
@@ -99,7 +95,7 @@ const Index = () => {
         />
       )}
 
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center pb-24">
         <div className="max-w-md w-full mx-auto px-6 py-8 space-y-6">
         {/* Header with Title Logo */}
         <div className="text-center space-y-1">
@@ -166,6 +162,9 @@ const Index = () => {
           </div>
         </div>
       </div>
+      
+      {/* Bottom Navigation Bar */}
+      <BottomNavBar />
     </>
   );
 };
