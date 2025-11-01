@@ -7,6 +7,7 @@ import DrawButton from "@/components/DrawButton";
 import ResultDisplay from "@/components/ResultDisplay";
 import SpinWheel from "@/components/SpinWheel";
 import BottomNavBar from "@/components/BottomNavBar";
+import FeedbackCard from "@/components/FeedbackCard";
 import titleLogo from "@/assets/title-logo.png";
 import { toast } from "sonner";
 
@@ -153,6 +154,9 @@ const Index = () => {
               isDrawing={isDrawing}
               disabled={mode === "custom" && customItems.length === 0}
             />
+
+            {/* Feedback Card */}
+            <FeedbackCard />
           </div>
         )}
 

@@ -32,7 +32,7 @@ export default function History() {
           </div>
           
           {/* Coming Soon Badge */}
-          <div className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-primary to-accent text-foreground font-medium text-sm shadow-md">
+          <div className="w-full h-16 rounded-3xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-black text-lg font-semibold shadow-lg transition-all hover:scale-105 flex items-center justify-center">
             即将推出 🎉
           </div>
         </div>

@@ -1,0 +1,171 @@
+import { Share2, Copy, QrCode, Link as LinkIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from 'sonner';
+import { useState } from 'react';
+import BottomNavBar from '@/components/BottomNavBar';
+import { QRCodeCanvas } from 'qrcode.react';
+
+export default function Share() {
+  const [showQR, setShowQR] = useState(false);
+  // 动态获取当前域名 - 本地开发自动是 localhost，部署后自动是线上域名
+  const currentUrl = window.location.origin;
+
+  // Web Share API - 移动端系统分享
+  const handleSystemShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: '等会吃啥 - Decision Dish',
+          text: '快来试试这个帮你决定吃什么的神器！🍱',
+          url: currentUrl
+        });
+        toast.success('分享成功！');
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          // 分享失败，降级到复制链接
+          handleCopyLink();
+        }
+      }
+    } else {
+      // 不支持 Web Share API，直接复制链接
+      handleCopyLink();
+    }
+  };
+
+  // 复制链接到剪贴板
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(currentUrl);
+      toast.success('链接已复制到剪贴板！');
+    } catch (err) {
+      // 降级方案（兼容旧浏览器）
+      const input = document.createElement('input');
+      input.value = currentUrl;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      toast.success('链接已复制到剪贴板！');
+    }
+  };
+
+  return (
+    <>
+      <div className="min-h-screen pb-24 pt-8 px-4">
+      <div className="max-w-md mx-auto space-y-6">
+        {/* 标题 */}
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            分享给朋友
+          </h1>
+          <p className="text-muted-foreground">
+            让更多人告别选择困难症！
+          </p>
+        </div>
+
+        {/* 一键分享卡片 */}
+        <Card className="border-primary/20 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Share2 className="h-5 w-5 text-primary" />
+              一键分享
+            </CardTitle>
+            <CardDescription>
+              快速分享到微信、QQ等应用
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              onClick={handleSystemShare} 
+              className="w-full bg-primary hover:bg-primary/90"
+              size="lg"
+            >
+              <Share2 className="mr-2 h-5 w-5" />
+              立即分享
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* 复制链接卡片 */}
+        <Card className="border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <LinkIcon className="h-5 w-5 text-primary" />
+              复制链接
+            </CardTitle>
+            <CardDescription>
+              复制链接手动发送给好友
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="p-3 bg-muted rounded-lg text-sm text-muted-foreground break-all">
+              {currentUrl}
+            </div>
+            <Button 
+              onClick={handleCopyLink} 
+              variant="outline" 
+              className="w-full"
+              size="lg"
+            >
+              <Copy className="mr-2 h-4 w-4" />
+              复制链接
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* 二维码卡片 */}
+        <Card className="border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <QrCode className="h-5 w-5 text-primary" />
+              扫码分享
+            </CardTitle>
+            <CardDescription>
+              生成二维码，扫码直接访问
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {!showQR ? (
+              <Button 
+                onClick={() => setShowQR(true)} 
+                variant="outline" 
+                className="w-full"
+                size="lg"
+              >
+                <QrCode className="mr-2 h-4 w-4" />
+                生成二维码
+              </Button>
+            ) : (
+              <div className="flex flex-col items-center space-y-3">
+                <div className="p-4 bg-white rounded-xl shadow-inner">
+                  {/* 使用 qrcode.react 动态生成二维码 */}
+                  <QRCodeCanvas 
+                    value={currentUrl}
+                    size={256}
+                    level="H"
+                    includeMargin={false}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  使用微信或浏览器扫描二维码
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* 提示信息 */}
+        <div className="text-center text-sm text-muted-foreground space-y-1">
+          <p>💡 分享给朋友，一起告别选择困难症</p>
+          <p className="text-xs">
+            移动端支持直接分享到微信、QQ等应用
+          </p>
+        </div>
+      </div>
+      </div>
+
+      <BottomNavBar />
+    </>
+  );
+}

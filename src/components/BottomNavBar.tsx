@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, Heart, Clock, User } from 'lucide-react';
+import { Share2, Heart, Clock, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -12,9 +12,9 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: 'dashboard', label: '数据', icon: LayoutDashboard, route: '/dashboard' },
+  { id: 'share', label: '分享', icon: Share2, route: '/share' },
   { id: 'favorites', label: '收藏', icon: Heart, route: '/favorites' },
-  { id: 'draw', label: '', icon: LayoutDashboard, isCenter: true }, // 中央按钮：抽奖
+  { id: 'draw', label: '', icon: Share2, isCenter: true }, // 中央按钮：抽奖
   { id: 'history', label: '历史', icon: Clock, route: '/history' },
   { id: 'profile', label: '我的', icon: User, route: '/profile' },
 ];
@@ -26,9 +26,9 @@ export default function BottomNavBar() {
   // 根据当前路由设置活动标签
   const getActiveTab = () => {
     const path = location.pathname;
-    if (path === '/') return 'draw'; // 数据就是抽奖页
+    if (path === '/') return 'draw'; // 首页就是抽奖页
     const item = navItems.find(item => item.route === path);
-    return item?.id || 'dashboard';
+    return item?.id || 'share';
   };
   
   const [activeTab, setActiveTab] = useState(getActiveTab());
