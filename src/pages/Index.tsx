@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { presetRestaurants, Restaurant } from "@/data/restaurants";
+import { useRestaurants } from "@/hooks/useRestaurants";
 import ModeSelector from "@/components/ModeSelector";
 import CustomListManager from "@/components/CustomListManager";
 import DrawButton from "@/components/DrawButton";
@@ -18,6 +19,17 @@ const Index = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [result, setResult] = useState<Restaurant | string | null>(null);
   const [showWheel, setShowWheel] = useState(false);
+  
+  // 从 Supabase 获取餐厅数据
+  const { data: supabaseRestaurants, isLoading } = useRestaurants();
+  
+  // 使用 Supabase 数据或本地预设数据
+  const restaurants = supabaseRestaurants && supabaseRestaurants.length > 0 
+    ? supabaseRestaurants.map(r => ({ id: r.id, name: r.name, address: r.address, category: r.category }))
+    : presetRestaurants;
+  
+  // 调试：显示数据来源
+  console.log('数据来源:', supabaseRestaurants && supabaseRestaurants.length > 0 ? 'Supabase' : '本地', '餐厅数量:', restaurants.length);
 
   // Load custom items from localStorage
   useEffect(() => {
@@ -54,8 +66,8 @@ const Index = () => {
     // Calculate result immediately for the wheel
     let selectedResult: Restaurant | string;
     if (mode === "system") {
-      const randomIndex = Math.floor(Math.random() * presetRestaurants.length);
-      selectedResult = presetRestaurants[randomIndex];
+      const randomIndex = Math.floor(Math.random() * restaurants.length);
+      selectedResult = restaurants[randomIndex];
     } else {
       const randomIndex = Math.floor(Math.random() * customItems.length);
       selectedResult = customItems[randomIndex];
@@ -81,7 +93,7 @@ const Index = () => {
       {/* Spin Wheel Overlay */}
       {showWheel && result && (
         <SpinWheel
-          items={mode === "system" ? presetRestaurants : customItems}
+          items={mode === "system" ? restaurants : customItems}
           result={result}
           onComplete={handleWheelComplete}
         />
@@ -132,7 +144,7 @@ const Index = () => {
                   <span className="text-primary font-semibold" style={{
                     textShadow: '0 1px 2px rgba(0, 0, 0, 0.15), 0 0 0.5px rgba(255, 255, 255, 0.5)',
                   }}>
-                    {presetRestaurants.length} 家
+                    {restaurants.length} 家
                   </span>{" "}
                   精选店铺中随机抽取
                 </p>
