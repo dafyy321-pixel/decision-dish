@@ -148,15 +148,15 @@ const Index = () => {
               </div>
             )}
 
+            {/* Feedback Card */}
+            <FeedbackCard />
+
             {/* Draw Button */}
             <DrawButton
               onClick={handleDraw}
               isDrawing={isDrawing}
               disabled={mode === "custom" && customItems.length === 0}
             />
-
-            {/* Feedback Card */}
-            <FeedbackCard />
           </div>
         )}
 

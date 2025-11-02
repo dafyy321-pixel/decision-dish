@@ -27,24 +27,26 @@ npm run lint         # 运行 ESLint 代码检查
 - **单页应用 (SPA)**: 使用 React Router 进行路由管理
 - **状态管理**: 
   - 使用 `useState` 管理本地状态
-  - TanStack Query 用于数据获取和缓存（虽然当前未使用服务端数据）
+  - TanStack Query + Supabase 用于云端数据获取与缓存（`src/hooks/useRestaurants.ts`）
   - localStorage 持久化用户自定义餐厅列表 (key: `custom-restaurants`)
 - **组件架构**: 功能组件 + React Hooks
 
 ### 主要数据流
 1. **模式选择**: `Index.tsx` 维护 `mode` 状态 (`system` | `custom`)
 2. **餐厅数据**: 
-   - 系统模式: 从 `src/data/restaurants.ts` 的 `presetRestaurants` 读取
+   - 系统模式: 优先从 Supabase 表 `restaurants` 获取（`is_active=true`，按名称排序），失败或无数据时回退到 `src/data/restaurants.ts` 的 `presetRestaurants`
    - 自定义模式: 从 `localStorage` 读取并通过 `customItems` 状态管理
 3. **抽取流程**: 
    - 点击 DrawButton → 设置 `isDrawing=true` → 随机选择结果 → 显示 SpinWheel 动画 → 显示 ResultDisplay
 
 ### 关键组件
-- **Index.tsx**: 主页面，协调所有组件和状态
+- **Index.tsx**: 主页面，协调所有组件和状态（“必看！！”卡片位于“开始抽取”按钮之上）
 - **SpinWheel.tsx**: 转盘动画，包含固定 12 个扇形，旋转 1.5 秒后完成
 - **CustomListManager.tsx**: 管理自定义餐厅列表（最多 20 个）
 - **ModeSelector.tsx**: 切换系统/自定义模式
 - **ResultDisplay.tsx**: 展示抽取结果
+- **FeedbackCard.tsx**: 可展开的信息卡，包含问卷与微信群二维码
+- **BottomNavBar.tsx**: 底部导航栏（分享/收藏/抽奖/历史/我的）
 - **SplashScreen.tsx**: 启动闪屏动画
 
 ### UI 系统
@@ -53,6 +55,13 @@ npm run lint         # 运行 ESLint 代码检查
 - Tailwind CSS 用于样式，配置文件: `tailwind.config.ts`
 - 主题颜色通过 CSS 变量 (HSL) 定义
 - 支持深色模式（通过 `next-themes` 包）
+
+### 页面结构
+- `/` 抽奖页（Index）
+- `/share` 分享页（系统分享 / 复制链接 / 二维码）
+- `/favorites` 收藏页（占位页）
+- `/history` 历史页（占位页）
+- `/profile` 我的（占位页）
 
 ### TypeScript 配置
 - 配置较为宽松: `noImplicitAny: false`, `strictNullChecks: false`
@@ -69,7 +78,15 @@ npm run lint         # 运行 ESLint 代码检查
 - **代码检查**: ESLint 配置在 `eslint.config.js`
 - **开发标记**: `lovable-tagger` 仅在开发模式启用
 
-## 开发注意事项
+### 开发注意事项
+
+### Supabase 配置
+- 在项目根目录配置环境变量（Vite）：
+  - `VITE_SUPABASE_URL`
+  - `VITE_SUPABASE_ANON_KEY`
+- 客户端创建于 `src/lib/supabase.ts`
+- 数据获取：`src/hooks/useRestaurants.ts`（TanStack Query）
+- 类型定义：`src/types/database.types.ts`
 
 ### 添加新餐厅到系统列表
 编辑 `src/data/restaurants.ts`，遵循 `Restaurant` 接口:

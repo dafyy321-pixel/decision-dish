@@ -138,6 +138,61 @@ const FeedbackCard = () => {
                 </p>
               </div>
             </div>
+
+            {/* Divider */}
+            <div className="border-t border-primary/20 my-6"></div>
+
+            {/* WeChat Group Section */}
+            <div className="flex flex-col items-center space-y-3">
+              <p className="text-center text-lg font-bold text-primary">
+                🎉 还有个秘密基地等你发现！
+              </p>
+              <p className="text-center text-muted-foreground text-sm">
+                我们有个超活跃的<span className="text-primary font-semibold">微信讨论群</span>！<br />
+                在这里你可以：
+              </p>
+              
+              <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-4 border border-primary/20 w-full">
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <span>💭</span>
+                    <span>和其他"选择困难症患者"一起讨论今天吃啥</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>🚀</span>
+                    <span>第一时间体验新功能，当我们的"首席试吃官"</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>🤝</span>
+                    <span>直接@开发者，你的想法我们都想听！</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>🎁</span>
+                    <span>不定期发红包雨（真的！不是PPT！）</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* WeChat QR Code */}
+              <div className="w-48 h-48 rounded-2xl overflow-hidden border-2 border-accent/30
+                            hover:border-accent/50 transition-all duration-300 hover:scale-105 shadow-md">
+                <img 
+                  src="/微信图片_20251102213433_49_26.jpg" 
+                  alt="微信群二维码" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">👆 扫码加入微信讨论群</p>
+
+              <div className="text-center space-y-1">
+                <p className="text-sm text-accent font-semibold">
+                  🎪 群里都是有趣的灵魂和好吃的推荐！
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  快来和我们一起"云吃饭"吧！\(^o^)/ 🍕🍜🍱
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

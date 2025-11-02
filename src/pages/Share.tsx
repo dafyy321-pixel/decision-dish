@@ -54,6 +54,17 @@ export default function Share() {
     <>
       <div className="min-h-screen pb-24 pt-8 px-4">
       <div className="max-w-md mx-auto space-y-6">
+        {/* 标题图片 */}
+        <div className="text-center space-y-1">
+          <div className="relative inline-block">
+            <img
+              src="/imeng-2025-11-02-8389-变成黑色文字，白色背景.png"
+              alt="等会吃啥"
+              className="w-80 max-w-full mx-auto"
+            />
+          </div>
+        </div>
+
         {/* 标题 */}
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
