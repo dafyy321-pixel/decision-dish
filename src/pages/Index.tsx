@@ -90,33 +90,7 @@ const Index = () => {
   const handleWheelComplete = () => {
     setShowWheel(false);
     setIsDrawing(false);
-    
-    // 记录抽取历史到 localStorage
-    if (result) {
-      const restaurantName = typeof result === 'string' ? result : result.name;
-      const drawHistory = JSON.parse(localStorage.getItem('draw_history') || '[]');
-      const timestamp = new Date().toLocaleString('zh-CN');
-      
-      drawHistory.push({
-        name: restaurantName,
-        timestamp,
-        mode
-      });
-      
-      // 只保留最近 100 条记录
-      if (drawHistory.length > 100) {
-        drawHistory.shift();
-      }
-      
-      localStorage.setItem('draw_history', JSON.stringify(drawHistory));
-      
-      // 更新总抽取次数
-      const totalDraws = parseInt(localStorage.getItem('total_draws') || '0');
-      localStorage.setItem('total_draws', (totalDraws + 1).toString());
-      
-      // 记录最后抽取时间
-      localStorage.setItem('last_draw_time', timestamp);
-    }
+    // 历史记录与统计的写入已统一在 ResultDisplay 中处理，避免重复保存
   };
 
   const handleDrawAgain = () => {

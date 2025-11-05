@@ -63,7 +63,7 @@ const ResultDisplay = ({ result, mode, onDrawAgain }: ResultDisplayProps) => {
       };
 
       history.unshift(historyItem);
-      if (history.length > 100) {
+      if (history.length > 15) {
         history.pop();
       }
       localStorage.setItem('draw_history', JSON.stringify(history));

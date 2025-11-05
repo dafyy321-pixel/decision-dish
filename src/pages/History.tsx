@@ -29,14 +29,45 @@ export default function History() {
         try {
           const data = JSON.parse(stored) as Array<any>;
           // 转换数据格式以确保兼容性
-          const converted = data.map((item, index) => ({
+          const converted: HistoryItem[] = data.map((item, index) => ({
             id: item.id || `history-${index}`,
             result: item.result || item.name,
             name: item.name,
             timestamp: item.timestamp,
             mode: item.mode || 'system'
           }));
-          setHistory(converted);
+
+          // 去重清洗：同名同时间的记录，优先保留包含详细信息（有地址/分类的 Restaurant 对象）的那条；
+          // 同时丢弃没有名称的空记录。
+          const keyOf = (it: HistoryItem) => {
+            const name = typeof it.result === 'string'
+              ? it.result
+              : (it.result?.name || it.name || '');
+            return `${name}@@${it.timestamp || ''}`;
+          };
+
+          const isDetailed = (it: HistoryItem) =>
+            typeof it.result === 'object' && it.result && 'address' in it.result;
+
+          const map = new Map<string, HistoryItem>();
+          for (const item of converted) {
+            const k = keyOf(item);
+            const name = k.split('@@')[0];
+            if (!name.trim()) continue; // 丢弃空名称
+            const existing = map.get(k);
+            if (!existing) {
+              map.set(k, item);
+            } else if (!isDetailed(existing) && isDetailed(item)) {
+              // 用更详细的信息覆盖
+              map.set(k, item);
+            }
+          }
+
+          const cleaned = Array.from(map.values());
+          const limited = cleaned.slice(0, 15); // 只保留最近 15 条
+          setHistory(limited);
+          // 回写清理后的数据，避免下次再次出现重复
+          localStorage.setItem('draw_history', JSON.stringify(limited));
         } catch (e) {
           console.error('Failed to parse history:', e);
         }
@@ -245,7 +276,7 @@ export default function History() {
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-primary font-semibold">•</span>
-                  <span>最多保存最近 100 条记录</span>
+                  <span>最多保存最近 15 条记录</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-primary font-semibold">•</span>
