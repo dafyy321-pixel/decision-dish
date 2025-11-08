@@ -10,6 +10,7 @@ import BottomNavBar from "@/components/BottomNavBar";
 import FeedbackCard from "@/components/FeedbackCard";
 import titleLogo from "@/assets/title-logo.png";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
 
 const STORAGE_KEY = "custom-restaurants";
 
@@ -71,6 +72,12 @@ const Index = () => {
       return;
     }
 
+    // 埋点：点击抽取按钮
+    trackEvent('draw_clicked', {
+      mode: mode,
+      available_items: mode === "system" ? restaurants.length : customItems.length,
+    });
+
     setIsDrawing(true);
     setShowWheel(true);
     setResult(null);
@@ -90,10 +97,25 @@ const Index = () => {
   const handleWheelComplete = () => {
     setShowWheel(false);
     setIsDrawing(false);
+    
+    // 埋点：抽取结果展示
+    if (result) {
+      const resultName = typeof result === 'string' ? result : result.name;
+      trackEvent('draw_result', {
+        mode: mode,
+        result: resultName,
+      });
+    }
+    
     // 历史记录与统计的写入已统一在 ResultDisplay 中处理，避免重复保存
   };
 
   const handleDrawAgain = () => {
+    // 埋点：再抽一次
+    trackEvent('draw_again', {
+      mode: mode,
+    });
+    
     setResult(null);
     setShowWheel(false);
   };

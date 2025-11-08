@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Restaurant } from "@/data/restaurants";
 import { MapPin, RefreshCw, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { trackEvent } from "@/lib/analytics";
 
 interface ResultDisplayProps {
   result: Restaurant | string;
@@ -34,6 +35,13 @@ const ResultDisplay = ({ result, mode, onDrawAgain }: ResultDisplayProps) => {
       // 已收藏，删除
       favorites.splice(index, 1);
       setIsFavorited(false);
+      
+      // 埋点：取消收藏
+      trackEvent('favorite_removed', {
+        restaurant_id: result.id,
+        restaurant_name: result.name,
+      });
+      
       toast({
         title: "已取消收藏",
         description: `${result.name} 已从收藏列表移除`,
@@ -42,6 +50,13 @@ const ResultDisplay = ({ result, mode, onDrawAgain }: ResultDisplayProps) => {
       // 未收藏，添加
       favorites.push(result);
       setIsFavorited(true);
+      
+      // 埋点：添加收藏
+      trackEvent('favorite_added', {
+        restaurant_id: result.id,
+        restaurant_name: result.name,
+      });
+      
       toast({
         title: "收藏成功",
         description: `${result.name} 已加入收藏列表`,

@@ -2,14 +2,22 @@ import { Share2, Copy, QrCode, Link as LinkIcon, MessageCircle, Send } from 'luc
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BottomNavBar from '@/components/BottomNavBar';
 import { QRCodeCanvas } from 'qrcode.react';
+import { trackEvent } from '@/lib/analytics';
 
 export default function Share() {
   const [showQR, setShowQR] = useState(false);
   // 动态获取当前域名 - 本地开发自动是 localhost，部署后自动是线上域名
   const currentUrl = window.location.origin;
+
+  // 埋点：访问分享页面
+  useEffect(() => {
+    trackEvent('page_view', {
+      page: 'share',
+    });
+  }, []);
 
   // 检测是否在微信浏览器内
   const isInWeChat = () => {
@@ -18,6 +26,11 @@ export default function Share() {
 
   // 微信分享 - 直接唤起微信
   const handleWeChatShare = () => {
+    // 埋点：点击分享到微信
+    trackEvent('share_clicked', {
+      platform: 'wechat',
+    });
+    
     const shareText = encodeURIComponent('快来试试这个帮你决定吃什么的神器！🍱 ' + currentUrl);
     
     if (isInWeChat()) {
@@ -55,6 +68,11 @@ export default function Share() {
 
   // QQ分享 - 直接唤起QQ
   const handleQQShare = () => {
+    // 埋点：点击分享到QQ
+    trackEvent('share_clicked', {
+      platform: 'qq',
+    });
+    
     const shareUrl = encodeURIComponent(currentUrl);
     const shareTitle = encodeURIComponent('等会吃啥 - Decision Dish');
     const shareDesc = encodeURIComponent('快来试试这个帮你决定吃什么的神器！🍱');
@@ -102,6 +120,11 @@ export default function Share() {
 
   // 复制链接到剪贴板
   const handleCopyLink = async () => {
+    // 埋点：复制链接
+    trackEvent('share_clicked', {
+      platform: 'copy_link',
+    });
+    
     try {
       await navigator.clipboard.writeText(currentUrl);
       toast.success('链接已复制到剪贴板！');

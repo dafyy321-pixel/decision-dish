@@ -630,7 +630,7 @@ export default function Profile() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">应用名称</span>
-                  <span className="font-semibold">岭师专用（首的守金校区）</span>
+                  <span className="font-semibold">岭师专用（暂时寸金校区）</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">版本号</span>

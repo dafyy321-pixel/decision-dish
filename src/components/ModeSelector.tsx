@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Utensils, ListPlus } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 interface ModeSelectorProps {
   mode: "system" | "custom";
@@ -7,6 +8,15 @@ interface ModeSelectorProps {
 }
 
 const ModeSelector = ({ mode, onModeChange }: ModeSelectorProps) => {
+  const handleModeChange = (newMode: "system" | "custom") => {
+    // 埋点：记录模式选择
+    trackEvent('mode_selected', {
+      mode: newMode,
+      previous_mode: mode,
+    });
+    onModeChange(newMode);
+  };
+
   return (
     <div className="flex gap-3 p-2 bg-card rounded-3xl shadow-sm">
       <Button
@@ -16,7 +26,7 @@ const ModeSelector = ({ mode, onModeChange }: ModeSelectorProps) => {
             ? "bg-primary text-primary-foreground shadow-md" 
             : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
         }`}
-        onClick={() => onModeChange("system")}
+        onClick={() => handleModeChange("system")}
       >
         <Utensils className="w-5 h-5" />
         <span className="font-medium">系统推荐</span>
@@ -28,7 +38,7 @@ const ModeSelector = ({ mode, onModeChange }: ModeSelectorProps) => {
             ? "bg-primary text-primary-foreground shadow-md" 
             : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
         }`}
-        onClick={() => onModeChange("custom")}
+        onClick={() => handleModeChange("custom")}
       >
         <ListPlus className="w-5 h-5" />
         <span className="font-medium">自定义</span>
