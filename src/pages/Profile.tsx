@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import BottomNavBar from '@/components/BottomNavBar';
-import { BarChart3, Clock, Heart, Coffee, Flame, User, Tag, Award, Sparkles, Edit, Zap, TrendingUp, Star, Camera, Calendar, MapPin, Trophy, Plus, X } from 'lucide-react';
+import { BarChart3, Clock, Heart, Coffee, Flame, User, Tag, Award, Sparkles, Edit, Zap, TrendingUp, Star, Camera, Calendar, MapPin, Trophy, Plus, X, LogOut, LogIn } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export default function Profile() {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  
   const [stats, setStats] = useState({
     totalDraws: 0,
     favoritesCount: 0,
@@ -242,6 +248,11 @@ export default function Profile() {
     localStorage.setItem('preferences', JSON.stringify(newPreferences));
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
   return (
     <>
       <div className="min-h-screen bg-background pb-32 pt-8 px-4">
@@ -287,8 +298,32 @@ export default function Profile() {
                     <Edit className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary transition-colors" />
                   </div>
                   <p className="text-sm text-muted-foreground">{userInfo.signature}</p>
+                  {user && (
+                    <p className="text-xs text-muted-foreground/70">{user.email}</p>
+                  )}
                 </div>
               </div>
+              {user ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="w-full mt-4"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  退出登录
+                </Button>
+              ) : (
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => navigate('/login')}
+                  className="w-full mt-4"
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  登录/注册
+                </Button>
+              )}
             </CardContent>
           </Card>
 

@@ -1,0 +1,45 @@
+/* 日期范围选择器样式修复 */
+/* 确保日期范围的两端都使用圆角 */
+
+/* 范围选择的第一天和最后一天都显示为完整圆形 */
+.rdp-day_range_start {
+  border-radius: 50% !important;
+}
+
+.rdp-day_range_end {
+  border-radius: 50% !important;
+}
+
+/* 范围中间的日期显示为方形背景（无圆角） */
+.rdp-day_range_middle {
+  border-radius: 0 !important;
+}
+
+/* 单独选中的日期显示为圆形 */
+.rdp-day_selected {
+  border-radius: 50% !important;
+}
+
+/* 包含范围日期的单元格也要处理 */
+.rdp-cell:has(.rdp-day_range_start),
+.rdp-cell:has(.rdp-day_range_end) {
+  border-radius: 50%;
+}
+
+/* 修复cell本身的样式 */
+.rdp-cell[role="gridcell"] {
+  border-radius: 0;
+}
+
+/* 当cell包含范围内容时 */
+.rdp-cell:has([aria-selected].day-range-start),
+.rdp-cell:has([aria-selected].day-range-end) {
+  border-radius: 50%;
+}
+
+/* 范围开始的背景圆角 */
+.rdp-month_caption {
+  text-align: center;
+  display: block;
+  margin-bottom: 0.5rem;
+}
