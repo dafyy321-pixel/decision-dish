@@ -131,10 +131,17 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-pink-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">🍱 等会吃啥</CardTitle>
+          <div className="flex justify-center mb-4">
+            <img
+              src="/favicon.png"
+              alt="等会吃啥"
+              className="h-20 w-20"
+            />
+          </div>
+          <CardTitle className="text-2xl font-bold">等会吃啥</CardTitle>
           <CardDescription>登录或注册开始使用</CardDescription>
         </CardHeader>
         <CardContent>

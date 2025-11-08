@@ -1,27 +1,27 @@
 import { useState } from 'react';
-import { Share2, Heart, Clock, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface NavItem {
   id: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon?: string; // 图标路径
   isCenter?: boolean;
   route?: string;
 }
 
 const navItems: NavItem[] = [
-  { id: 'share', label: '分享', icon: Share2, route: '/share' },
-  { id: 'favorites', label: '收藏', icon: Heart, route: '/favorites' },
-  { id: 'draw', label: '', icon: Share2, isCenter: true }, // 中央按钮：抽奖
-  { id: 'history', label: '历史', icon: Clock, route: '/history' },
-  { id: 'profile', label: '我的', icon: User, route: '/profile' },
+  { id: 'share', label: '分享', icon: '/分享.gif', route: '/share' },
+  { id: 'favorites', label: '收藏', icon: '/收藏.gif', route: '/favorites' },
+  { id: 'draw', label: '', isCenter: true }, // 中央按钮：抽奖
+  { id: 'history', label: '历史', icon: '/历史.gif', route: '/history' },
+  { id: 'profile', label: '我的', icon: '/我的.gif', route: '/profile' },
 ];
 
 export default function BottomNavBar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [clickedItem, setClickedItem] = useState<string | null>(null);
   
   // 根据当前路由设置活动标签
   const getActiveTab = () => {
@@ -42,14 +42,15 @@ export default function BottomNavBar() {
         
         {/* Nav items */}
         <div className="relative flex items-center justify-around px-2 py-3">
-          {navItems.map((item, index) => {
+        {navItems.map((item, index) => {
             const isActive = activeTab === item.id;
-            const Icon = item.icon;
             
             return (
               <button
                 key={item.id}
                 onClick={() => {
+                  setClickedItem(item.id);
+                  setTimeout(() => setClickedItem(null), 300);
                   if (item.isCenter) {
                     // 中央按钮：跳转到抽奖页面
                     navigate('/');
@@ -91,19 +92,22 @@ export default function BottomNavBar() {
                     {/* Icon with animation */}
                     <div
                       className={cn(
-                        'relative flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300',
-                        isActive && 'animate-bounce-in',
+                        'relative flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300',
+                        clickedItem === item.id && 'scale-90',
                       )}
                     >
-                      <Icon
-                        className={cn(
-                          'transition-all duration-300',
-                          isActive
-                            ? 'h-6 w-6 text-primary scale-110'
-                            : 'h-5 w-5 text-muted-foreground scale-100 hover:scale-110',
-                        )}
-                        strokeWidth={isActive ? 2.5 : 2}
-                      />
+                      {item.icon && (
+                        <img
+                          src={item.icon}
+                          alt={item.label}
+                          className={cn(
+                            'transition-all duration-300',
+                            clickedItem === item.id
+                              ? 'h-8 w-8 scale-90'
+                              : 'h-8 w-8 scale-100',
+                          )}
+                        />
+                      )}
                       
                       {/* 移除了橙色小点 */}
                     </div>
